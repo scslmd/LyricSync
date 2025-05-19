@@ -7,7 +7,7 @@ on:
     branches: [ main, develop ]
 
 jobs:
-  ci:
+  build:
     runs-on: windows-latest
 
     steps:
@@ -25,3 +25,30 @@ jobs:
 
       - name: Run Tests
         run: dotnet test --no-build --configuration Release --verbosity normal
+
+      - name: Calculate SemVer
+        id: gitversion
+        # The GitVersion GitHub Action automatically fetches the required tool, no local installation needed
+        uses: GitTools/actions/gitversion@v0.9.14
+
+  release:
+    needs: build
+    runs-on: windows-latest # Ensures build job completes first
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: '6.0.x'
+      - name: Calculate SemVer
+        id: gitversion
+        uses: GitTools/actions/gitversion@v0.9.11
+      - name: Create Draft Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ steps.gitversion.outputs.semVer }}
+          release_name: Release ${{ steps.gitversion.outputs.semVer }}
+          draft: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
