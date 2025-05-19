@@ -15,19 +15,23 @@ jobs:
         uses: actions/setup-dotnet@v1
         with:
           dotnet-version: '6.0.x'
-
+      - name: Install GitVersion
+        run: dotnet tool install --global GitVersion.Tool --version 5.13.1
+      - name: Add to PATH
+        run: echo "${HOME}/.dotnet/tools" >> $GITHUB_PATH
       - name: Restore Dependencies
         run: dotnet restore
-
       - name: Build Solution
         run: dotnet build --no-restore --configuration Release
-
       - name: Run Tests
         run: dotnet test --no-build --configuration Release --verbosity normal
-
+      - name: Install GitVersion Tool
+        run: dotnet tool install --global GitVersion.Tool --version 5.13.1
+      - name: Add GitVersion to PATH
+        run: echo "${HOME}/.dotnet/tools" >> $GITHUB_PATH
       - name: Calculate SemVer
+        run: gitversion /output json /showvariable SemVer
         id: gitversion
-        # The GitVersion GitHub Action automatically fetches the required tool, no local installation needed
         uses: GitTools/actions-gitversion@v0.9.14
   release:
     needs: build
