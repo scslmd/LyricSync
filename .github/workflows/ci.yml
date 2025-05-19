@@ -11,40 +11,56 @@ jobs:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v2
+
       - name: Setup .NET SDK
         uses: actions/setup-dotnet@v1
         with:
           dotnet-version: '6.0.x'
-      - name: Use GitVersion
-        uses: GitTools/actions-gitversion@v0.9.14
-      - name: Add to PATH
-        run: echo "${HOME}/.dotnet/tools" >> $GITHUB_PATH
-      - name: Restore Dependencies
-        run: dotnet restore
-      - name: Build Solution
-        run: dotnet build --no-restore --configuration Release
-      - name: Run Tests
-        run: dotnet test --no-build --configuration Release --verbosity normal
+
+      # Install GitVersion CLI as a global tool
       - name: Install GitVersion Tool
         run: dotnet tool install --global GitVersion.Tool --version 5.13.1
+      
       - name: Add GitVersion to PATH
         run: echo "${HOME}/.dotnet/tools" >> $GITHUB_PATH
+      
       - name: Calculate SemVer
-        run: gitversion /output json /showvariable SemVer
         id: gitversion
+        run: gitversion /output json /showvariable SemVer
+
+      - name: Restore Dependencies
+        run: dotnet restore
+
+      - name: Build Solution
+        run: dotnet build --no-restore --configuration Release
+
+      - name: Run Tests
+        run: dotnet test --no-build --configuration Release --verbosity normal
+
+      
   release:
     needs: build
     runs-on: windows-latest # Ensures build job completes first
     if: github.ref == 'refs/heads/main'
     steps:
       - uses: actions/checkout@v2
+
       - name: Setup .NET SDK
         uses: actions/setup-dotnet@v1
         with:
           dotnet-version: '6.0.x'
+      
+      # Install GitVersion CLI as a global tool
+      - name: Install GitVersion Tool
+        run: dotnet tool install --global GitVersion.Tool --version 5.13.1
+
+      - name: Add GitVersion to PATH
+        run: echo "${HOME}/.dotnet/tools" >> $GITHUB_PATH
+
       - name: Calculate SemVer
         id: gitversion
-        uses: GitTools/actions-gitversion@v0.9.14
+        run: gitversion /output json /showvariable SemVer
+
       - name: Create Draft Release
         uses: softprops/action-gh-release@v1
         with:
