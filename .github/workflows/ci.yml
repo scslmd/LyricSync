@@ -9,7 +9,6 @@ on:
 jobs:
   build:
     runs-on: windows-latest
-
     steps:
       - uses: actions/checkout@v2
       - name: Setup .NET SDK
@@ -29,8 +28,7 @@ jobs:
       - name: Calculate SemVer
         id: gitversion
         # The GitVersion GitHub Action automatically fetches the required tool, no local installation needed
-        uses: GitTools/actions/gitversion@v0.9.14
-
+        uses: GitTools/actions-gitversion@v0.9.14
   release:
     needs: build
     runs-on: windows-latest # Ensures build job completes first
@@ -43,7 +41,7 @@ jobs:
           dotnet-version: '6.0.x'
       - name: Calculate SemVer
         id: gitversion
-        uses: GitTools/actions/gitversion@v0.9.11
+        uses: GitTools/actions-gitversion@v0.9.14
       - name: Create Draft Release
         uses: softprops/action-gh-release@v1
         with:
