@@ -15,8 +15,8 @@ jobs:
         uses: actions/setup-dotnet@v1
         with:
           dotnet-version: '6.0.x'
-      - name: Install GitVersion
-        run: dotnet tool install --global GitVersion.Tool --version 5.13.1
+      - name: Use GitVersion
+        uses: GitTools/actions-gitversion@v0.9.14
       - name: Add to PATH
         run: echo "${HOME}/.dotnet/tools" >> $GITHUB_PATH
       - name: Restore Dependencies
@@ -32,7 +32,6 @@ jobs:
       - name: Calculate SemVer
         run: gitversion /output json /showvariable SemVer
         id: gitversion
-        uses: GitTools/actions-gitversion@v0.9.14
   release:
     needs: build
     runs-on: windows-latest # Ensures build job completes first
@@ -50,7 +49,7 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           tag_name: ${{ steps.gitversion.outputs.semVer }}
-          release_name: Release ${{ steps.gitversion.outputs.semVer }}
+          name: Release ${{ steps.gitversion.outputs.semVer }}
           draft: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
