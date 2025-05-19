@@ -25,8 +25,8 @@ jobs:
         run: echo "${HOME}/.dotnet/tools" >> $GITHUB_PATH
       
       - name: Calculate SemVer
-        uses: gittools/actions/gitversion/execute@v0
         id: gitversion
+        run: dotnet-gitversion /output json /showvariable SemVer
 
       - name: Restore Dependencies
         run: dotnet restore
@@ -37,7 +37,6 @@ jobs:
       - name: Run Tests
         run: dotnet test --no-build --configuration Release --verbosity normal
 
-      
   release:
     needs: build
     runs-on: windows-latest # Ensures build job completes first
@@ -58,8 +57,8 @@ jobs:
         run: echo "${HOME}/.dotnet/tools" >> $GITHUB_PATH
 
       - name: Calculate SemVer
-        uses: gittools/actions/gitversion/execute@v0
         id: gitversion
+        run: dotnet-gitversion /output json /showvariable SemVer
 
       - name: Create Draft Release
         uses: softprops/action-gh-release@v1
