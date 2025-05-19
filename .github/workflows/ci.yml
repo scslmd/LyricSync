@@ -10,7 +10,9 @@ jobs:
   build:
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Fetches full history (required for GitVersion)
 
       - name: Setup .NET 8 SDK
         uses: actions/setup-dotnet@v3
@@ -42,7 +44,9 @@ jobs:
     runs-on: windows-latest # Ensures build job completes first
     if: github.ref == 'refs/heads/main'
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Fetches full history (required for GitVersion)
 
       - name: Setup .NET 8 SDK
         uses: actions/setup-dotnet@v3
