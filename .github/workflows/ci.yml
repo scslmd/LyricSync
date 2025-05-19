@@ -19,7 +19,7 @@ jobs:
 
       # Install GitVersion CLI as a global tool
       - name: Install GitVersion Tool
-        run: dotnet tool install --global GitVersion.Tool --version 5.13.1
+        run: dotnet tool install --global GitVersion.Tool --version 6.3.0
       
       - name: Add GitVersion to PATH
         run: echo "${HOME}/.dotnet/tools" >> $GITHUB_PATH
@@ -52,7 +52,7 @@ jobs:
       
       # Install GitVersion CLI as a global tool
       - name: Install GitVersion Tool
-        run: dotnet tool install --global GitVersion.Tool --version 5.13.1
+        run: dotnet tool install --global GitVersion.Tool --version 6.3.0
 
       - name: Add GitVersion to PATH
         run: echo "${HOME}/.dotnet/tools" >> $GITHUB_PATH
