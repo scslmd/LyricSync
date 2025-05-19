@@ -28,7 +28,7 @@ jobs:
       
       - name: Calculate SemVer
         id: gitversion
-        run: dotnet-gitversion /output json /showvariable SemVer
+        run: echo "SEMVER=$(dotnet-gitversion /output json /showvariable SemVer)" >> $GITHUB_OUTPUT
 
       - name: Restore Dependencies
         run: dotnet restore
@@ -62,7 +62,7 @@ jobs:
 
       - name: Calculate SemVer
         id: gitversion
-        run: dotnet-gitversion /output json /showvariable SemVer
+        run: echo "SEMVER=$(dotnet-gitversion /output json /showvariable SemVer)" >> $GITHUB_OUTPUT
 
       - name: Create Draft Release
         uses: softprops/action-gh-release@v1
